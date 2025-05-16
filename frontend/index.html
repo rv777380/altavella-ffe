@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lourini FFE - Móveis e Tecidos</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="components/checkout-form.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <img src="logo.png" alt="Lourini" id="logo">
+            <h1>Lourini Coleção de Tecidos 2024/2025</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="chatbot-container">
+            <div class="products-panel">
+                <h2>Categorias</h2>
+                <div id="categories"></div>
+                <div id="products"></div>
+            </div>
+            <div class="chat-panel">
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Chat messages will appear here -->
+                </div>
+                <div class="chat-input">
+                    <input type="text" id="userInput" placeholder="Escreva sua mensagem...">
+                    <button id="sendButton">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import catalog from './catalog.js';
+        import APIClient from './api/api-client.js';
+        
+        // Initialize API client
+        const apiClient = new APIClient('https://lourini-ffe-api.altavella.workers.dev');
+        
+        // Initialize chatbot when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Dynamic import of chatbot module
+            import('./chatbot.js').then(module => {
+                const LouriniChatbot = module.default;
+                
+                // Initialize chatbot with API client
+                new LouriniChatbot(
+                    'chatMessages', 
+                    'userInput', 
+                    'sendButton',
+                    apiClient
+                );
+            });
+        });
+    </script>
+</body>
+</html>
