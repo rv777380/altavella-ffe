@@ -1,0 +1,8 @@
+name = "lourini-ffe-api"
+main = "index.js"
+compatibility_date = "2023-05-18"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "lourini-ffe-db"
+database_id = "YOUR_D1_DATABASE_ID"  # Replace with your actual D1 database ID
