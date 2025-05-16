@@ -1,0 +1,63 @@
+name: Deploy to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    name: Deploy Frontend
+    steps:
+      - uses: actions/checkout@v3
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: lourini-ffe-frontend
+          directory: frontend
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-admin:
+    runs-on: ubuntu-latest
+    name: Deploy Admin Dashboard
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: |
+          cd admin
+          npm ci
+      - name: Build admin dashboard
+        run: |
+          cd admin
+          npm run build
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: lourini-ffe-admin
+          directory: admin/build
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-worker:
+    runs-on: ubuntu-latest
+    name: Deploy Worker
+    steps:
+      - uses: actions/checkout@v3
+      - name: Publish to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: worker
+          command: publish
